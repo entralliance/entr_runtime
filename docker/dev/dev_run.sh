@@ -1,3 +1,7 @@
+# Create a folder mounted by the docker image where data can be placed, accessible from within the docker container
+cd ~
+mkdir entr
+
 # Create a new container from the image (if the image doesn't yet exist, first run the script dev_build.sh)
 docker run -p 8888:8888 \
   --name ENTR-dev \

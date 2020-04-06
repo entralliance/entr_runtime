@@ -1,0 +1,1 @@
+docker build -t entralliance/entr-dev .

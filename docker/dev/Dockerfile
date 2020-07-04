@@ -15,7 +15,7 @@ RUN cp /home/jovyan/OpenOA/examples/turbine_analysis/data/example_20180829/scada
 
 # -------------------------------------------------------------------------------
 # SECTION: Install and configure the Postgres database
-# source: https://severalnines.com/database-blog/deploying-postgresql-docker-container
+# pattern: https://severalnines.com/database-blog/deploying-postgresql-docker-container
 
 USER root
 
@@ -58,10 +58,22 @@ RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.co
 RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
 
 # Expose the PostgreSQL port
-EXPOSE 5432
+# EXPOSE 5432
 
 # Add VOLUMEs to allow backup of config, logs and databases
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
 # Set the default command to run when starting the container
-CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+# pattern: https://docs.docker.com/config/containers/multi-service_container/
+USER root
+COPY startup_wrapper_script.sh /usr/local/bin
+RUN ["chmod", "+x", "/usr/local/bin/startup_wrapper_script.sh"]
+CMD /usr/local/bin/startup_wrapper_script.sh
+
+
+# Configure container startup
+#ENTRYPOINT ["tini", "-g", "--"]
+## CMD ["start-notebook.sh"]
+#CMD ["start-notebook.sh", "runuser -l postgres -c '/usr/lib/postgresql/9.3/bin/postgres -D /var/lib/postgresql/9.3/main -c config_file=/etc/postgresql/9.3/main/postgresql.conf'"]
+
+USER root

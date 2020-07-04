@@ -1,11 +1,12 @@
-# Create a folder mounted by the docker image where data can be placed, accessible from within the docker container
-cd ~
-mkdir entr
+# On Mac OS, uncomment the following lines to create a folder mounted by the docker image where data can be placed,
+# accessible from within the docker container.
+# cd ~
+# mkdir entr
 
 # Create a new container from the image (if the image doesn't yet exist, first run the script dev_build.sh)
 docker run -p 8888:8888 \
   --name ENTR-dev \
-  --mount type=bind,source=entr,destination=/home/jovyan/host \
+  --mount type=bind,source=/Users/c/entr,destination=/home/jovyan/host \
   entralliance/entr-dev:latest
 
 # Open Jupyter Notebook in a browser (strategy 1)

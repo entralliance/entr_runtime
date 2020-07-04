@@ -69,11 +69,3 @@ USER root
 COPY startup_wrapper_script.sh /usr/local/bin
 RUN ["chmod", "+x", "/usr/local/bin/startup_wrapper_script.sh"]
 CMD /usr/local/bin/startup_wrapper_script.sh
-
-
-# Configure container startup
-#ENTRYPOINT ["tini", "-g", "--"]
-## CMD ["start-notebook.sh"]
-#CMD ["start-notebook.sh", "runuser -l postgres -c '/usr/lib/postgresql/9.3/bin/postgres -D /var/lib/postgresql/9.3/main -c config_file=/etc/postgresql/9.3/main/postgresql.conf'"]
-
-USER root

@@ -69,3 +69,46 @@ USER root
 COPY startup_wrapper_script.sh /usr/local/bin
 RUN ["chmod", "+x", "/usr/local/bin/startup_wrapper_script.sh"]
 CMD /usr/local/bin/startup_wrapper_script.sh
+
+## -------------------------------------------------------------------------------
+## SECTION: Install and configure Melatano
+## source: https://meltano.com/
+#
+## Create directory for Meltano projects
+#RUN mkdir meltano-projects
+#RUN cd meltano-projects
+#
+## Create and activate virtual environment
+#RUN python3 -m venv .venv
+#RUN source .venv/bin/activate
+#
+## Install Meltano
+#RUN pip3 install meltano
+#
+## Initialize a new Meltano project
+#RUN SHELLRC=~/.$(basename $SHELL)rc # ~/.bashrc, ~/.zshrc, etc
+#RUN echo "export MELTANO_DISABLE_TRACKING=1" >> $SHELLRC
+#RUN meltano init wind-project --no_usage_stats
+#RUN cd wind-project
+#RUN source ../.venv/bin/activate #  activate the virtual environment
+#
+## Set up singer taps to source data
+#RUN meltano add extractor tap-csv
+#
+#meltano add loader target-csv # add the csv loader
+#mkdir -p output # Ensure target-jsonl output directory exists
+#meltano elt tap-gitlab target-jsonl --job_id=gitlab-to-jsonl
+
+
+## -------------------------------------------------------------------------------
+## SECTION: Install and configure DBT
+## source: https://meltano.com/
+
+# source: https://github.com/mikekaminsky/dbt-setup-example
+
+USER root
+RUN pip install dbt
+RUN dbt init wind_project
+RUN cd wind_project
+COPY profiles.yml /home/jovyan/wind_project
+COPY dbt_config.sh /home/jovyan/

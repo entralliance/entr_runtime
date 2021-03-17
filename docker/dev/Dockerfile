@@ -1,16 +1,16 @@
 # Start from a core stack version
-FROM jupyter/datascience-notebook
+FROM jupyter/all-spark-notebook
 
 # -------------------------------------------------------------------------------
 # SECTION: Install and configure OpenOA
 
 # clone OpenOA
 RUN git clone https://github.com/NREL/OpenOA.git
-RUN pip install ./OpenOA
+# RUN pip install ./OpenOA
 
 # extract sample OpenOA data
 RUN unzip /home/jovyan/OpenOA/examples/turbine_analysis/data/example_20180829.zip example_20180829/scada_10min_4cols.csv -d /home/jovyan/OpenOA/examples/turbine_analysis/data
-RUN cp /home/jovyan/OpenOA/examples/turbine_analysis/data/example_20180829/scada_10min_4cols.csv /home/jovyan/OpenOA/examples/turbine_analysis/data
+# RUN cp /home/jovyan/OpenOA/examples/turbine_analysis/data/example_20180829/scada_10min_4cols.csv /home/jovyan/OpenOA/examples/turbine_analysis/data
 
 
 # -------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc
 #  There are some warnings (in red) that show up during the build. You can hide
 #  them by prefixing each apt-get statement with DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
-RUN apt-get install -y postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3 # removed: python-software-properties software-properties-common
+RUN apt-get install -y postgresql-12 postgresql-client-12 postgresql-contrib-12 # removed: python-software-properties software-properties-common
 
 # Note: The official Debian and Ubuntu images automatically ``apt-get clean``
 # after each ``apt-get``
@@ -52,10 +52,10 @@ RUN    /etc/init.d/postgresql start &&\
 
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible.
-RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.conf
+RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/12/main/pg_hba.conf
 
 # And add ``listen_addresses`` to ``/etc/postgresql/9.3/main/postgresql.conf``
-RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
+RUN echo "listen_addresses='*'" >> /etc/postgresql/12/main/postgresql.conf
 
 # Expose the PostgreSQL port
 # EXPOSE 5432
@@ -70,35 +70,8 @@ COPY startup_wrapper_script.sh /usr/local/bin
 RUN ["chmod", "+x", "/usr/local/bin/startup_wrapper_script.sh"]
 CMD /usr/local/bin/startup_wrapper_script.sh
 
-## -------------------------------------------------------------------------------
-## SECTION: Install and configure Melatano
-## source: https://meltano.com/
-#
-## Create directory for Meltano projects
-#RUN mkdir meltano-projects
-#RUN cd meltano-projects
-#
-## Create and activate virtual environment
-#RUN python3 -m venv .venv
-#RUN source .venv/bin/activate
-#
-## Install Meltano
-#RUN pip3 install meltano
-#
-## Initialize a new Meltano project
-#RUN SHELLRC=~/.$(basename $SHELL)rc # ~/.bashrc, ~/.zshrc, etc
-#RUN echo "export MELTANO_DISABLE_TRACKING=1" >> $SHELLRC
-#RUN meltano init wind-project --no_usage_stats
-#RUN cd wind-project
-#RUN source ../.venv/bin/activate #  activate the virtual environment
-#
-## Set up singer taps to source data
-#RUN meltano add extractor tap-csv
-#
-#meltano add loader target-csv # add the csv loader
-#mkdir -p output # Ensure target-jsonl output directory exists
-#meltano elt tap-gitlab target-jsonl --job_id=gitlab-to-jsonl
-
+# copy the postgres driver in (COMMENT IN THE FOLLOWING AFTER DOWNLOADING POSTGRES DRIVER JAR)
+# COPY postgresql-42.2.19.jar /home/jovyan/
 
 ## -------------------------------------------------------------------------------
 ## SECTION: Install and configure DBT
@@ -108,7 +81,10 @@ CMD /usr/local/bin/startup_wrapper_script.sh
 
 USER root
 RUN pip install dbt
-RUN dbt init wind_project
-RUN cd wind_project
-COPY profiles.yml /home/jovyan/wind_project
+RUN dbt init fleet
+RUN cd fleet
+COPY profiles.yml /home/jovyan/fleet
 COPY dbt_config.sh /home/jovyan/
+
+#RUN echo "conda activate $(head -1 ${environment} | cut -d' ' -f2)" >> ~/.bashrc
+

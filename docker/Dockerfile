@@ -9,7 +9,7 @@ RUN git clone https://github.com/NREL/OpenOA.git
 # RUN pip install ./OpenOA
 
 # extract sample OpenOA data
-RUN unzip /home/jovyan/OpenOA/examples/turbine_analysis/data/example_20180829.zip example_20180829/scada_10min_4cols.csv -d /home/jovyan/OpenOA/examples/turbine_analysis/data
+# RUN unzip /home/jovyan/OpenOA/examples/turbine_analysis/data/example_20180829.zip example_20180829/scada_10min_4cols.csv -d /home/jovyan/OpenOA/examples/turbine_analysis/data
 # RUN cp /home/jovyan/OpenOA/examples/turbine_analysis/data/example_20180829/scada_10min_4cols.csv /home/jovyan/OpenOA/examples/turbine_analysis/data
 
 
@@ -85,6 +85,8 @@ RUN dbt init fleet
 RUN cd fleet
 COPY profiles.yml /home/jovyan/fleet
 COPY dbt_config.sh /home/jovyan/
+
+COPY run_data_pipeline.sh /home/jovyan/
 
 #RUN echo "conda activate $(head -1 ${environment} | cut -d' ' -f2)" >> ~/.bashrc
 

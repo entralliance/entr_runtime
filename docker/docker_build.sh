@@ -1,0 +1,1 @@
+docker build -t entr/entr-runtime .

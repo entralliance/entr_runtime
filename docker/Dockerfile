@@ -79,6 +79,15 @@ CMD /usr/local/bin/startup_wrapper_script.sh
 
 # source: https://github.com/mikekaminsky/dbt-setup-example
 
+RUN pip install pandas
+RUN pip install matplotlib
+RUN pip install xgboost
+RUN pip install numpy
+RUN pip install sklearn
+RUN pip install xgboost
+RUN pip install sklearn
+RUN pip install scipy
+
 USER root
 RUN pip install dbt
 RUN dbt init fleet

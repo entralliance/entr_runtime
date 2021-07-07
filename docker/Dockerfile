@@ -5,7 +5,7 @@ FROM jupyter/all-spark-notebook
 # SECTION: Install and configure OpenOA
 
 # clone OpenOA
-RUN git clone https://github.com/NREL/OpenOA.git
+RUN git clone https://github.com/entralliance/OpenOA
 # RUN pip install ./OpenOA
 
 # extract sample OpenOA data

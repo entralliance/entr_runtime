@@ -1,6 +1,6 @@
 # Run the docker environment
 docker run -p 8888:8888 \
-  --name ENTR-dev \
+  --name entr-runtime \
   entralliance/entr-runtime:latest
 
 # Open Jupyter Notebook in a browser (strategy 1)

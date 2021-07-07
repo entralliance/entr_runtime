@@ -9,9 +9,7 @@ RUN git clone https://github.com/NREL/OpenOA.git
 # RUN pip install ./OpenOA
 
 # extract sample OpenOA data
-# RUN unzip /home/jovyan/OpenOA/examples/turbine_analysis/data/example_20180829.zip example_20180829/scada_10min_4cols.csv -d /home/jovyan/OpenOA/examples/turbine_analysis/data
-# RUN cp /home/jovyan/OpenOA/examples/turbine_analysis/data/example_20180829/scada_10min_4cols.csv /home/jovyan/OpenOA/examples/turbine_analysis/data
-
+RUN unzip /home/jovyan/OpenOA/examples/data/la_haute_borne.zip -d /home/jovyan/OpenOA/examples/data/
 
 # -------------------------------------------------------------------------------
 # SECTION: Install and configure the Postgres database
@@ -20,7 +18,9 @@ RUN git clone https://github.com/NREL/OpenOA.git
 USER root
 
 # Install requirement: https://stackoverflow.com/questions/50757647/e-gnupg-gnupg2-and-gnupg1-do-not-seem-to-be-installed-but-one-of-them-is-requ
-RUN apt-get update && apt-get install -y gnupg2
+RUN apt-get upgrade
+RUN apt-get update
+RUN apt-get install -y gnupg2
 
 # Add the PostgreSQL PGP key to verify their Debian packages.
 # It should be the same key as https://www.postgresql.org/media/keys/ACCC4CF8.asc
@@ -33,7 +33,6 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc
 # Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL 9.3
 #  There are some warnings (in red) that show up during the build. You can hide
 #  them by prefixing each apt-get statement with DEBIAN_FRONTEND=noninteractive
-RUN apt-get update
 RUN apt-get install -y postgresql-12 postgresql-client-12 postgresql-contrib-12 # removed: python-software-properties software-properties-common
 
 # Note: The official Debian and Ubuntu images automatically ``apt-get clean``

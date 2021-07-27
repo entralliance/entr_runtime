@@ -10,6 +10,9 @@ if [ $status -ne 0 ]; then
   exit $status
 fi
 
+# Start the third process
+/usr/local/spark/bin/spark-submit --class org.apache.spark.sql.hive.thriftserver.HiveThriftServer2 &
+
 # Start the second process
 /usr/local/bin/start-notebook.sh
 
@@ -18,6 +21,7 @@ if [ $status -ne 0 ]; then
   echo "Failed to start my_second_process: $status"
   exit $status
 fi
+
 
 # Naive check runs checks once a minute to see if either of the processes exited.
 # This illustrates part of the heavy lifting you need to do if you want to run

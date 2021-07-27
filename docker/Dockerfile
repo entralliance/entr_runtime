@@ -89,12 +89,22 @@ RUN pip install scipy
 
 USER root
 RUN pip install dbt
-RUN dbt init fleet
-RUN cd fleet
-COPY profiles.yml /home/jovyan/fleet
-COPY dbt_config.sh /home/jovyan/
+#RUN dbt init fleet
+#RUN cd fleet
+#COPY profiles.yml /home/jovyan/fleet
+#COPY dbt_config.sh /home/jovyan/
+# RUN wget https://www.dropbox.com/sh/mrmzzoypkj3av6e/AAA3mtXvKQpnhzZSaQxbyH9oa?dl=1
+RUN wget https://www.dropbox.com/s/jsq5xzy3ixpun3f/entr_warehouse.zip?dl=1 -O entr_warehouse.zip
+RUN unzip entr_warehouse.zip
+RUN rm entr_warehouse.zip
+RUN rm -rf __MACOSX
 
-COPY run_data_pipeline.sh /home/jovyan/
+# COPY run_data_pipeline.sh /home/jovyan/
 
 #RUN echo "conda activate $(head -1 ${environment} | cut -d' ' -f2)" >> ~/.bashrc
 
+###############################################
+# THRIFT server - https://github.com/bitnami/bitnami-docker-spark/issues/32
+USER root
+# needed so that thrift server can create the megastore_db directory
+RUN chmod g+w /usr/local/spark

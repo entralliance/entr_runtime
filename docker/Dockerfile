@@ -77,7 +77,6 @@ CMD /usr/local/bin/startup_wrapper_script.sh
 ## source: https://meltano.com/
 
 # source: https://github.com/mikekaminsky/dbt-setup-example
-
 RUN pip install pandas
 RUN pip install matplotlib
 RUN pip install xgboost
@@ -88,19 +87,20 @@ RUN pip install sklearn
 RUN pip install scipy
 
 USER root
+RUN apt-get install -y libsasl2-modules-gssapi-heimdal
+RUN apt-get install libsasl2-dev
 RUN pip install dbt
-#RUN dbt init fleet
-#RUN cd fleet
-#COPY profiles.yml /home/jovyan/fleet
-#COPY dbt_config.sh /home/jovyan/
-# RUN wget https://www.dropbox.com/sh/mrmzzoypkj3av6e/AAA3mtXvKQpnhzZSaQxbyH9oa?dl=1
+RUN pip install dbt-spark
+RUN pip install dbt-spark[PyHive]
+RUN pip install sasl
+
 RUN wget https://www.dropbox.com/s/jsq5xzy3ixpun3f/entr_warehouse.zip?dl=1 -O entr_warehouse.zip
 RUN unzip entr_warehouse.zip
 RUN rm entr_warehouse.zip
 RUN rm -rf __MACOSX
+RUN chown -R jovyan /home/jovyan/entr_warehouse
 
 # COPY run_data_pipeline.sh /home/jovyan/
-
 #RUN echo "conda activate $(head -1 ${environment} | cut -d' ' -f2)" >> ~/.bashrc
 
 ###############################################

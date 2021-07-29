@@ -104,7 +104,7 @@ RUN chown -R jovyan /home/jovyan/entr_warehouse
 #RUN echo "conda activate $(head -1 ${environment} | cut -d' ' -f2)" >> ~/.bashrc
 
 ###############################################
-# THRIFT server - https://github.com/bitnami/bitnami-docker-spark/issues/32
+## SECTION: Configure Thrift server
 USER root
 # needed so that thrift server can create the megastore_db directory
 RUN chmod g+w /usr/local/spark

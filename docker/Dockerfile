@@ -6,7 +6,7 @@ FROM jupyter/all-spark-notebook
 
 # clone OpenOA
 RUN git clone https://github.com/entralliance/OpenOA
-# RUN pip install ./OpenOA
+RUN pip install ./OpenOA
 
 # extract sample OpenOA data
 RUN unzip /home/jovyan/OpenOA/examples/data/la_haute_borne.zip -d /home/jovyan/OpenOA/examples/data/

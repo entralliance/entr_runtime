@@ -1,9 +1,9 @@
 # Run this command to create a running instance of the entr runtime (a container)
 # After you have run this command, follow directions in the console output to log by the web
 # using the link that resembes: "http://127.0.0.1:8888..."
-docker run -p 8888:8888 \
-  --name entr-runtime \
-  entr/entr-runtime:latest
+# docker run -p 8888:8888 \
+#   --name entr-runtime \
+#   entr/entr-runtime:latest
 
 # Open Jupyter Notebook in a browser (strategy 1)
 # Look at the log output from docker run command. You will see at the end of the output a link which resembles the following:

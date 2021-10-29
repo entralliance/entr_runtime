@@ -144,3 +144,7 @@ static
 
 # Jetbrains
 .idea
+
+entr
+
+*.DS_Store

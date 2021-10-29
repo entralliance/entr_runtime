@@ -5,6 +5,7 @@ FROM jupyter/all-spark-notebook
 # SECTION: Install and configure OpenOA
 
 # clone OpenOA
+RUN pwd
 RUN git clone https://github.com/entralliance/OpenOA
 RUN pip install ./OpenOA
 
@@ -28,7 +29,7 @@ RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4C
 
 # Add PostgreSQL's repository. It contains the most recent stable release
 #     of PostgreSQL, ``9.3``.
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
 # Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL 9.3
 #  There are some warnings (in red) that show up during the build. You can hide
@@ -89,6 +90,7 @@ RUN pip install scipy
 USER root
 RUN apt-get install -y libsasl2-modules-gssapi-heimdal
 RUN apt-get install libsasl2-dev
+RUN conda install -c conda-forge sasl
 RUN pip install dbt
 RUN pip install dbt-spark
 RUN pip install dbt-spark[PyHive]

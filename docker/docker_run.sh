@@ -24,9 +24,9 @@ docker run -p 8888:8888 \
 # mkdir entr
 
 # Create a new container from the image (if the image doesn't yet exist, first run the script dev_build.sh)
-# docker run -p 8888:8888 \
-#  --name ENTR-runtime \
-#  --mount type=bind,source=/Users/c/entr,destination=/home/jovyan/host \
-#  entralliance/entr-runtime:latest
+docker run -p 8888:8888 \
+  --name ENTR-runtime \
+ --mount type=bind,source=$(PWD),destination=/home/jovyan/host \
+  entr/entr-runtime:latest
 
 

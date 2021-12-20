@@ -1,0 +1,6 @@
+[submodule "entr_warehouse"]
+	path = entr_warehouse
+	url = git@github.com:entralliance/entr_warehouse.git
+[submodule "OpenOA"]
+	path = OpenOA
+	url = git@github.com:entralliance/OpenOA.git

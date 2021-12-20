@@ -2,17 +2,6 @@
 FROM jupyter/all-spark-notebook
 
 # -------------------------------------------------------------------------------
-# SECTION: Install and configure OpenOA
-
-# clone OpenOA
-RUN pwd
-RUN git clone https://github.com/entralliance/OpenOA
-RUN pip install ./OpenOA
-
-# extract sample OpenOA data
-RUN unzip /home/jovyan/OpenOA/examples/data/la_haute_borne.zip -d /home/jovyan/OpenOA/examples/data/
-
-# -------------------------------------------------------------------------------
 # SECTION: Install and configure the Postgres database
 # pattern: https://severalnines.com/database-blog/deploying-postgresql-docker-container
 
@@ -66,7 +55,7 @@ VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 # Set the default command to run when starting the container
 # pattern: https://docs.docker.com/config/containers/multi-service_container/
 USER root
-COPY startup_wrapper_script.sh /usr/local/bin
+COPY docker/startup_wrapper_script.sh /usr/local/bin
 RUN ["chmod", "+x", "/usr/local/bin/startup_wrapper_script.sh"]
 CMD /usr/local/bin/startup_wrapper_script.sh
 
@@ -96,12 +85,6 @@ RUN pip install dbt-spark
 RUN pip install dbt-spark[PyHive]
 RUN pip install sasl
 
-RUN wget https://www.dropbox.com/s/jsq5xzy3ixpun3f/entr_warehouse.zip?dl=1 -O entr_warehouse.zip
-RUN unzip entr_warehouse.zip
-RUN rm entr_warehouse.zip
-RUN rm -rf __MACOSX
-RUN chown -R jovyan /home/jovyan/entr_warehouse
-
 # COPY run_data_pipeline.sh /home/jovyan/
 #RUN echo "conda activate $(head -1 ${environment} | cut -d' ' -f2)" >> ~/.bashrc
 
@@ -110,3 +93,30 @@ RUN chown -R jovyan /home/jovyan/entr_warehouse
 USER root
 # needed so that thrift server can create the megastore_db directory
 RUN chmod g+w /usr/local/spark
+
+# -------------------------------------------------------------------------------
+# SECTION: Seed Entr Warehouse by Running DBT Pipeline
+ADD . /opt/entr
+
+RUN cat /opt/entr/entr_warehouse/dbt_project.yml
+
+# -------------------------------------------------------------------------------
+# SECTION: Seed Entr Warehouse by Running DBT Pipeline
+WORKDIR /opt/entr/entr_warehouse/
+
+RUN dbt deps --profiles-dir .
+RUN dbt seed --profiles-dir . --no-version-check
+RUN dbt run --profiles-dir . --no-version-check
+
+
+# -------------------------------------------------------------------------------
+# SECTION: Install and configure OpenOA
+
+USER root
+RUN pip install -e /opt/entr/OpenOA
+
+# -------------------------------------------------------------------------------
+# SECTION: EntryPoint
+
+USER root
+WORKDIR /home/jovyan

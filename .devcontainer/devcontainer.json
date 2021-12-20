@@ -1,0 +1,9 @@
+{
+    "name": "entr-runtime",
+    "build": { 
+      "dockerfile": "../docker/Dockerfile",
+      "context": "${localWorkspaceFolder}"},
+    "mounts": [
+      "source=${localWorkspaceFolder},target=/opt/entr,type=bind,consistency=cached"
+    ]
+  }

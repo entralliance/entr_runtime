@@ -6,7 +6,7 @@ packaged together to accelerate the transition to clean energy.
 ## Getting Started
 
 1. Install Docker on your local developer machine. Your machine must support bash.
-2. Checkout `entr_runtime`, `entr_warehouse`, and `OpenOA` to a working directory on your machine. The directory tree should look like this:
+2. Clone `entr_runtime` to a working directory on your machine: `git clone --recurse-submodules git@github.com:entralliance/entr_runtime.git`
 - cwd/
   - entr_runtime
   - entr_warehouse

@@ -80,9 +80,8 @@ USER root
 RUN apt-get install -y libsasl2-modules-gssapi-heimdal
 RUN apt-get install libsasl2-dev
 RUN conda install -c conda-forge sasl
-RUN pip install dbt
-RUN pip install dbt-spark
-RUN pip install dbt-spark[PyHive]
+RUN pip install dbt==0.21.1
+RUN pip install dbt-spark[PyHive]==0.21.1
 RUN pip install sasl
 
 # COPY run_data_pipeline.sh /home/jovyan/
@@ -97,8 +96,6 @@ RUN chmod g+w /usr/local/spark
 # -------------------------------------------------------------------------------
 # SECTION: Seed Entr Warehouse by Running DBT Pipeline
 ADD . /opt/entr
-
-RUN cat /opt/entr/entr_warehouse/dbt_project.yml
 
 # -------------------------------------------------------------------------------
 # SECTION: Seed Entr Warehouse by Running DBT Pipeline
@@ -116,7 +113,7 @@ USER root
 RUN pip install -e /opt/entr/OpenOA
 
 # -------------------------------------------------------------------------------
-# SECTION: EntryPoint
+# SECTION: Entry Point
 
 USER root
 WORKDIR /home/jovyan

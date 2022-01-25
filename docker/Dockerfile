@@ -55,7 +55,7 @@ VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 # Set the default command to run when starting the container
 # pattern: https://docs.docker.com/config/containers/multi-service_container/
 USER root
-COPY startup_wrapper_script.sh /usr/local/bin
+COPY docker/startup_wrapper_script.sh /usr/local/bin
 RUN ["chmod", "+x", "/usr/local/bin/startup_wrapper_script.sh"]
 CMD /usr/local/bin/startup_wrapper_script.sh
 

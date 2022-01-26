@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  runtime:
+    build:
+      context: docker/.
+      dockerfile: Dockerfile-dev
+    image: entr-runtime
+    volumes:
+      - ./:/home/jovyan/host/
+    ports:
+      - 8888:8888

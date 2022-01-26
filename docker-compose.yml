@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile-dev
     image: entr-runtime
     volumes:
-      - ./:/home/jovyan/host/
+      - ./entr_warehouse:/home/jovyan/host/entr_warehouse
+      - ./OpenOA:/home/jovyan/host/OpenOA
     ports:
       - 8888:8888

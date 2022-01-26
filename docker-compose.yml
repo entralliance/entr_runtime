@@ -11,4 +11,5 @@ services:
       - ./entr_warehouse:/home/jovyan/host/entr_warehouse
       - ./OpenOA:/home/jovyan/host/OpenOA
     ports:
-      - 8888:8888
+      - 8888:8888 # Jupyter notebook UI
+      - 4040:4040 # [Spark Web UI](https://spark.apache.org/docs/latest/monitoring.html#web-interfaces)

@@ -1,11 +1,11 @@
 version: '3'
 
 services:
-  entr:
+  entr_runtime:
     build:
       context: docker/.
       dockerfile: Dockerfile-dev
-    container_name: runtime
+    container_name: ENTR-runtime
     image: entr_runtime
     volumes:
       - ./entr_warehouse:/home/jovyan/host/entr_warehouse

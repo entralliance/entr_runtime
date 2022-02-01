@@ -1,23 +1,9 @@
-config:
-    use_colors: True
-default:
-  outputs:
-    dev:
-      type: postgres
-      threads: 1
-      host: localhost
-      port: 5432
-      user: "{{ env_var('USERNAME') }}"
-      pass: "{{ env_var('PASSWORD') }}"
-      dbname: wind_project
-      schema: dev
-    prod:
-      type: postgres
-      threads: 1
-      host: localhost
-      port: 5432
-      user: "{{ env_var('USERNAME') }}"
-      pass: "{{ env_var('PASSWORD') }}"
-      dbname: wind_project
-      schema: analytics
-  target: dev
+entr_warehouse:   
+  target: dev   
+  outputs:     
+    dev:       
+      type: spark
+      method: thrift       
+      schema: entr_warehouse       
+      host: 127.0.0.1       
+      port: 10000

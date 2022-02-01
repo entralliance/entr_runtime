@@ -17,7 +17,7 @@ RUN conda install -c conda-forge sasl &&\
     mkdir /home/jovyan/.dbt -p
 
 # copy profiles where dbt can find it
-COPY profiles.yml /home/jovyan/.dbt
+COPY build_profiles.yml /home/jovyan/.dbt/profiles.yml
 
 # TBD: Install and configure OpenOA - depends on how we want to do this based on workflow
 

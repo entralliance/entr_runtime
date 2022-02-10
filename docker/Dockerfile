@@ -35,5 +35,5 @@ RUN chmod +x /usr/local/bin/startup_wrapper_script.sh
 # -------------------------------------------------------------------------------
 # SECTION: Entry Point
 USER root
-WORKDIR /home/jovyan
+WORKDIR /home/jovyan/host
 CMD /usr/local/bin/startup_wrapper_script.sh

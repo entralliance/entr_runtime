@@ -8,8 +8,8 @@ services:
     container_name: ENTR-runtime
     image: entr_runtime
     volumes:
-      - ${OpenOA_path}:/home/jovyan/host/OpenOA
-      - ${entr_warehouse_path}:/home/jovyan/host/entr_warehouse
+      - ${analytics}:/home/jovyan/host/analytics
+      - ${warehouse}:/home/jovyan/host/warehouse
     ports:
       - 8888:8888 # Jupyter notebook UI
       - 4040:4040 # [Spark Web UI](https://spark.apache.org/docs/latest/monitoring.html#web-interfaces)

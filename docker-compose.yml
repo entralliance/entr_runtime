@@ -10,6 +10,6 @@ services:
       - ${analytics}:/home/jovyan/host/analytics
       - ${warehouse}:/home/jovyan/host/warehouse
     ports:
-      - 8888:8888 # Jupyter notebook UI
-      - 4040:4040 # [Spark Web UI](https://spark.apache.org/docs/latest/monitoring.html#web-interfaces)
-      - 8080:8080 # dbt docs UI
+      - ${jupyter_port}:8888 # Jupyter notebook UI
+      - ${spark_ui_port}:4040 # [Spark Web UI](https://spark.apache.org/docs/latest/monitoring.html#web-interfaces)
+      - ${dbt_docs_port}:8080 # dbt docs UI

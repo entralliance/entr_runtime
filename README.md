@@ -10,7 +10,6 @@ production by renewable generator operators.
 
 ## Getting Started
 
-
 <!-- some steps copied over from https://github.com/airbytehq/airbyte/blob/master/docs/deploying-airbyte/local-deployment.md -->
 1. Install Docker on your workstation \(see [instructions](https://www.docker.com/products/docker-desktop)\). Make sure you're on the latest version of `docker-compose`.
     - We recommend following [this guide](https://docs.docker.com/docker-for-windows/install/) to install Docker on Windows. After installing the WSL 2 backend and Docker you should be able to run containers using Windows PowerShell.

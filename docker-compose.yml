@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  entr_runtime:
+    build:
+      context: docker/.
+      dockerfile: Dockerfile
+    image: entr_runtime
+    volumes:
+      - ${analytics}:/home/jovyan/host/analytics
+      - ${warehouse}:/home/jovyan/host/warehouse
+    ports:
+      - ${jupyter_port}:8888 # Jupyter notebook UI
+      - ${spark_ui_port}:4040 # [Spark Web UI](https://spark.apache.org/docs/latest/monitoring.html#web-interfaces)
+      - ${dbt_docs_port}:8080 # dbt docs UI

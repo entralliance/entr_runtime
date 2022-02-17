@@ -1,3 +1,8 @@
+# default warehouse and analytics container mount locations
+warehouse/
+analytics/
+
+# ---- standard py gitignore ----
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

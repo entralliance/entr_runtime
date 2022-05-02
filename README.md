@@ -24,6 +24,9 @@ production by renewable generator operators.
 ### Assumed Repository Structure
 When the entr_runtime Docker image is built locally, it will try to mount [OpenOA](https://github.com/entralliance/OpenOA) and [entr_warehouse](https://github.com/entralliance/entr_warehouse) directories that exist at the same directory level where entr_runtime is installed. These two repositories are meant to be the locations where analytical development work and dbt data modeling development work persist locally, and those directories will be created if they don't already exist. Users can change the parameters in the `.env` file to map the mounts to different locations if OpenOA or entr_runtime exist in a different location on the local filesystem.
 
+### Building runtime container
+docker build -t entralliance/entr_runtime docker
+
 ## Roadmap
 
 Coming soon!

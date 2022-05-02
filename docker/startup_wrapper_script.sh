@@ -1,27 +1,6 @@
 #!/bin/bash
 
-# Start the first process
-# /usr/lib/postgresql/9.3/bin/postgres -D /var/lib/postgresql/9.3/main -c config_file=/etc/postgresql/9.3/main/postgresql.conf
-runuser -l postgres -c '/usr/lib/postgresql/9.3/bin/postgres -D /var/lib/postgresql/9.3/main -c config_file=/etc/postgresql/9.3/main/postgresql.conf' &
-
-status=$?
-if [ $status -ne 0 ]; then
-  echo "Failed to start my_first_process: $status"
-  exit $status
-fi
-
-# Start the third process
-/usr/local/spark/bin/spark-submit --class org.apache.spark.sql.hive.thriftserver.HiveThriftServer2 &
-
-# Start the second process
-/usr/local/bin/start-notebook.sh
-
-status=$?
-if [ $status -ne 0 ]; then
-  echo "Failed to start my_second_process: $status"
-  exit $status
-fi
-
+start_entr_services.sh &
 
 # Naive check runs checks once a minute to see if either of the processes exited.
 # This illustrates part of the heavy lifting you need to do if you want to run

@@ -43,6 +43,7 @@ RUN chmod +x /usr/local/bin/startup_wrapper_script.sh &&\
 
 ## -------------------------------------------------------------------------------
 ## SECTION: Install and configure entr-warehouse
+USER jovyan
 WORKDIR /home/jovyan/src/entr_warehouse
 RUN git clone --depth 1 https://github.com/entralliance/entr_warehouse.git . && \
     rm -rf .git &&\
@@ -55,7 +56,7 @@ RUN git clone --depth 1 https://github.com/entralliance/entr_warehouse.git . && 
 
 # -------------------------------------------------------------------------------
 # SECTION: Entry Point
-USER root
+USER jovyan
 WORKDIR /home/jovyan
 CMD /usr/local/bin/startup_wrapper_script.sh
 

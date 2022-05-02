@@ -15,14 +15,15 @@ USER jovyan
 RUN conda install -c conda-forge sasl &&\
     pip install pandas matplotlib xgboost numpy sklearn xgboost sklearn scipy dbt-spark[PyHive]==1.0.0 sasl &&\
     mkdir /home/jovyan/.dbt -p &&\
-    mkdir /home/jovyan/host/analytics -p &&\
-    mkdir /home/jovyan/host/warehouse
+    mkdir /home/jovyan/src/OpenOA -p &&\
+    mkdir /home/jovyan/src/entr_warehouse -p &&\
+    mkdir /home/jovyan/warehouse -p
 
 # copy profiles where dbt can find it
 COPY build_profiles.yml /home/jovyan/.dbt/profiles.yml
 
 # Install and configure OpenOA
-WORKDIR /home/jovyan/host/analytics
+WORKDIR /home/jovyan/src/OpenOA
 RUN git clone --depth 1 https://github.com/entralliance/OpenOA.git . && \
     rm -rf .git &&\
     pip install .
@@ -42,7 +43,7 @@ RUN chmod +x /usr/local/bin/startup_wrapper_script.sh &&\
 
 ## -------------------------------------------------------------------------------
 ## SECTION: Install and configure entr-warehouse
-WORKDIR /home/jovyan/host/warehouse
+WORKDIR /home/jovyan/src/entr_warehouse
 RUN git clone --depth 1 https://github.com/entralliance/entr_warehouse.git . && \
     rm -rf .git &&\
     bash /usr/local/bin/start_entr_services.sh &&\
@@ -55,6 +56,6 @@ RUN git clone --depth 1 https://github.com/entralliance/entr_warehouse.git . && 
 # -------------------------------------------------------------------------------
 # SECTION: Entry Point
 USER root
-WORKDIR /home/jovyan/host
+WORKDIR /home/jovyan
 CMD /usr/local/bin/startup_wrapper_script.sh
 

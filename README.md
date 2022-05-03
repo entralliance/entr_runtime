@@ -27,6 +27,21 @@ When the entr_runtime Docker image is built locally, it will try to mount [OpenO
 ### Building runtime container
 docker build -t entralliance/entr_runtime docker
 
+### Running the entr runtime container
+
+Basic mode, forwarding all ports to localhost:
+
+```
+docker run -p 8888:8888 -p 8080:8080 -p 4040:4040 entralliance/entr_runtime
+```
+
+Dev mode, overload OpenOA and entr_warehouse with development versions
+
+```
+docker run -p 8888:8888 -p 8080:8080 -p 4040:4040 -v /Users/jperrsau/src/entr-tcf/OpenOA:/home/jovyan/src/OpenOA -v /Users/jperrsau/src/entr-tcf/entr_warehouse:/home/jovyan/src/entr_warehouse entralliance/entr_runtime
+```
+Note, you will then need to re-install OpenOA in editable mode, or run `dbt run` as needed to update the container with the new code.
+
 ## Roadmap
 
 Coming soon!

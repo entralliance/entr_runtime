@@ -5,5 +5,5 @@ entr_warehouse:
       type: spark
       method: thrift       
       schema: entr_warehouse       
-      host: 127.0.0.1       
+      host: localhost       
       port: 10000

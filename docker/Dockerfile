@@ -22,11 +22,13 @@ RUN conda install -c conda-forge sasl &&\
 # copy profiles where dbt can find it
 COPY build_profiles.yml /home/jovyan/.dbt/profiles.yml
 
+RUN pwd
+
 # Install and configure OpenOA
 WORKDIR /home/jovyan/src/OpenOA
 RUN git clone --depth 1 https://github.com/entralliance/OpenOA.git . && \
     rm -rf .git &&\
-    pip install .
+    pip install -e .
 
 ## -------------------------------------------------------------------------------
 ## SECTION: copy local files and grant permissions

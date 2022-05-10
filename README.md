@@ -25,7 +25,9 @@ production by renewable generator operators.
 When the entr_runtime Docker image is built locally, it will try to mount [OpenOA](https://github.com/entralliance/OpenOA) and [entr_warehouse](https://github.com/entralliance/entr_warehouse) directories that exist at the same directory level where entr_runtime is installed. These two repositories are meant to be the locations where analytical development work and dbt data modeling development work persist locally, and those directories will be created if they don't already exist. Users can change the parameters in the `.env` file to map the mounts to different locations if OpenOA or entr_runtime exist in a different location on the local filesystem.
 
 ### Building runtime container
+```
 docker build -t entralliance/entr_runtime docker
+```
 
 ### Running the entr runtime container
 
@@ -33,6 +35,7 @@ Basic mode, forwarding all ports to localhost:
 
 ```
 docker run -p 8888:8888 -p 8080:8080 -p 4040:4040 entralliance/entr_runtime
+# use the option --no-cache to force rebuilding of each layer
 ```
 
 Dev mode, overload OpenOA and entr_warehouse with development versions
@@ -41,6 +44,10 @@ Dev mode, overload OpenOA and entr_warehouse with development versions
 docker run -p 8888:8888 -p 8080:8080 -p 4040:4040 -v /Users/jperrsau/src/entr-tcf/OpenOA:/home/jovyan/src/OpenOA -v /Users/jperrsau/src/entr-tcf/entr_warehouse:/home/jovyan/src/entr_warehouse entralliance/entr_runtime
 ```
 Note, you will then need to re-install OpenOA in editable mode, or run `dbt run` as needed to update the container with the new code.
+
+```
+!connect jdbc:hive2://localhost:10000
+```
 
 ## Roadmap
 

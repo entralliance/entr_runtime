@@ -50,7 +50,7 @@ WORKDIR /home/jovyan/src/entr_warehouse
 RUN git clone --depth 1 https://github.com/entralliance/entr_warehouse.git . && \
     rm -rf .git &&\
     bash /usr/local/bin/start_entr_services.sh &&\
-    sleep 10 &&\
+    sleep 60 &&\
     dbt debug &&\
     dbt deps &&\
     dbt seed &&\

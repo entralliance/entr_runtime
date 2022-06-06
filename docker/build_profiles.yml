@@ -1,9 +1,9 @@
-entr_warehouse:   
-  target: dev   
-  outputs:     
-    dev:       
+entr_warehouse:
+  target: dev
+  outputs:
+    dev:
       type: spark
-      method: thrift       
-      schema: entr_warehouse       
-      host: localhost       
+      method: thrift
+      schema: entr_warehouse
+      host: 127.0.0.1
       port: 10000

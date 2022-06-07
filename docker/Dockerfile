@@ -1,5 +1,5 @@
 # Start from a core stack version
-FROM jupyter/all-spark-notebook
+FROM jupyter/all-spark-notebook:python-3.9.12
 
 # -------------------------------------------------------------------------------
 # SECTION: initial setup & package updates
@@ -13,7 +13,7 @@ RUN apt-get update && \
 ## SECTION: Install and configure Python packages (including DBT)
 USER jovyan
 RUN conda install -c conda-forge sasl &&\
-    pip install pandas matplotlib xgboost numpy sklearn xgboost sklearn scipy dbt-spark[PyHive]==1.0.0 sasl &&\
+    pip install pandas matplotlib xgboost numpy sklearn xgboost sklearn scipy dbt-spark[PyHive]==1.0 sasl &&\
     mkdir /home/jovyan/.dbt -p &&\
     mkdir /home/jovyan/src/OpenOA -p &&\
     mkdir /home/jovyan/src/entr_warehouse -p &&\

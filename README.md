@@ -26,7 +26,7 @@ When the entr_runtime Docker image is built locally, it will try to mount [OpenO
 
 ### Building runtime container
 ```
-docker build -t entr/entr-runtime
+docker build -t entr/entr-runtime docker
 ```
 
 ### Running the entr runtime container

@@ -1,6 +1,9 @@
 # Start from a core stack version
 FROM jupyter/all-spark-notebook:python-3.9.12
 
+# set branch of entr_warehouse to clone & build
+ARG entr_warehouse_branch=dev
+
 # -------------------------------------------------------------------------------
 # SECTION: initial setup & package updates
 USER root
@@ -47,8 +50,8 @@ RUN chmod +x /usr/local/bin/startup_wrapper_script.sh &&\
 ## SECTION: Install and configure entr-warehouse
 USER jovyan
 WORKDIR /home/jovyan/src/entr_warehouse
-RUN git clone --depth 1 https://github.com/entralliance/entr_warehouse.git . && \
 ENV DBT_PROJECT_PATH=/home/jovyan/src/entr_warehouse
+RUN git clone --depth 1 --branch ${entr_warehouse_branch} https://github.com/entralliance/entr_warehouse.git . && \
     rm -rf .git &&\
     bash /usr/local/bin/start_entr_services.sh &&\
     sleep 60 &&\

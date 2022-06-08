@@ -48,6 +48,7 @@ RUN chmod +x /usr/local/bin/startup_wrapper_script.sh &&\
 USER jovyan
 WORKDIR /home/jovyan/src/entr_warehouse
 RUN git clone --depth 1 https://github.com/entralliance/entr_warehouse.git . && \
+ENV DBT_PROJECT_PATH=/home/jovyan/src/entr_warehouse
     rm -rf .git &&\
     bash /usr/local/bin/start_entr_services.sh &&\
     sleep 60 &&\

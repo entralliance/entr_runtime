@@ -1,110 +1,68 @@
 # Start from a core stack version
-FROM jupyter/all-spark-notebook
+FROM jupyter/all-spark-notebook:python-3.9.12
+
+# set branch of entr_warehouse to clone & build
+ARG entr_warehouse_branch=dev
 
 # -------------------------------------------------------------------------------
-# SECTION: Install and configure OpenOA
-
-# clone OpenOA
-RUN git clone https://github.com/entralliance/OpenOA
-RUN pip install ./OpenOA
-
-# extract sample OpenOA data
-RUN unzip /home/jovyan/OpenOA/examples/data/la_haute_borne.zip -d /home/jovyan/OpenOA/examples/data/
-
-# -------------------------------------------------------------------------------
-# SECTION: Install and configure the Postgres database
-# pattern: https://severalnines.com/database-blog/deploying-postgresql-docker-container
-
+# SECTION: initial setup & package updates
 USER root
-
-# Install requirement: https://stackoverflow.com/questions/50757647/e-gnupg-gnupg2-and-gnupg1-do-not-seem-to-be-installed-but-one-of-them-is-requ
-RUN apt-get upgrade
-RUN apt-get update
-RUN apt-get install -y gnupg2
-
-# Add the PostgreSQL PGP key to verify their Debian packages.
-# It should be the same key as https://www.postgresql.org/media/keys/ACCC4CF8.asc
-RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7FCC7D46ACCC4CF8
-
-# Add PostgreSQL's repository. It contains the most recent stable release
-#     of PostgreSQL, ``9.3``.
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
-
-# Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL 9.3
-#  There are some warnings (in red) that show up during the build. You can hide
-#  them by prefixing each apt-get statement with DEBIAN_FRONTEND=noninteractive
-RUN apt-get install -y postgresql-12 postgresql-client-12 postgresql-contrib-12 # removed: python-software-properties software-properties-common
-
-# Note: The official Debian and Ubuntu images automatically ``apt-get clean``
-# after each ``apt-get``
-
-# Run the rest of the commands as the ``postgres`` user created by the ``postgres-9.3`` package when it was ``apt-get installed``
-USER postgres
-
-# Create a PostgreSQL role named ``postgresondocker`` with ``postgresondocker`` as the password and
-# then create a database `postgresondocker` owned by the ``postgresondocker`` role.
-# Note: here we use ``&&\`` to run commands one after the other - the ``\``
-#       allows the RUN command to span multiple lines.
-RUN    /etc/init.d/postgresql start &&\
-    psql --command "CREATE USER postgresondocker WITH SUPERUSER PASSWORD 'postgresondocker';" &&\
-    createdb -O postgresondocker postgresondocker
-
-# Adjust PostgreSQL configuration so that remote connections to the
-# database are possible.
-RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/12/main/pg_hba.conf
-
-# And add ``listen_addresses`` to ``/etc/postgresql/9.3/main/postgresql.conf``
-RUN echo "listen_addresses='*'" >> /etc/postgresql/12/main/postgresql.conf
-
-# Expose the PostgreSQL port
-# EXPOSE 5432
-
-# Add VOLUMEs to allow backup of config, logs and databases
-VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
-
-# Set the default command to run when starting the container
-# pattern: https://docs.docker.com/config/containers/multi-service_container/
-USER root
-COPY startup_wrapper_script.sh /usr/local/bin
-RUN ["chmod", "+x", "/usr/local/bin/startup_wrapper_script.sh"]
-CMD /usr/local/bin/startup_wrapper_script.sh
-
-# copy the postgres driver in (COMMENT IN THE FOLLOWING AFTER DOWNLOADING POSTGRES DRIVER JAR)
-# COPY postgresql-42.2.19.jar /home/jovyan/
+RUN apt-get update && \
+    apt-get -y upgrade && \
+    apt-get install -y libsasl2-modules-gssapi-heimdal && \
+    apt-get install -y libsasl2-dev
 
 ## -------------------------------------------------------------------------------
-## SECTION: Install and configure DBT
-## source: https://meltano.com/
+## SECTION: Install and configure Python packages (including DBT)
+USER jovyan
+RUN conda install -c conda-forge sasl &&\
+    pip install pandas matplotlib xgboost numpy sklearn xgboost sklearn scipy dbt-spark[PyHive]==1.0 sasl &&\
+    mkdir /home/jovyan/.dbt -p &&\
+    mkdir /home/jovyan/src/OpenOA -p &&\
+    mkdir /home/jovyan/src/entr_warehouse -p &&\
+    mkdir /home/jovyan/warehouse -p
 
-# source: https://github.com/mikekaminsky/dbt-setup-example
-RUN pip install pandas
-RUN pip install matplotlib
-RUN pip install xgboost
-RUN pip install numpy
-RUN pip install sklearn
-RUN pip install xgboost
-RUN pip install sklearn
-RUN pip install scipy
+# copy profiles where dbt can find it
+COPY build_profiles.yml /home/jovyan/.dbt/profiles.yml
 
+RUN pwd
+
+# Install and configure OpenOA
+WORKDIR /home/jovyan/src/OpenOA
+RUN git clone --depth 1 https://github.com/entralliance/OpenOA.git . && \
+    rm -rf .git &&\
+    pip install -e .
+
+## -------------------------------------------------------------------------------
+## SECTION: copy local files and grant permissions
 USER root
-RUN apt-get install -y libsasl2-modules-gssapi-heimdal
-RUN apt-get install libsasl2-dev
-RUN pip install dbt
-RUN pip install dbt-spark
-RUN pip install dbt-spark[PyHive]
-RUN pip install sasl
 
-RUN wget https://www.dropbox.com/s/jsq5xzy3ixpun3f/entr_warehouse.zip?dl=1 -O entr_warehouse.zip
-RUN unzip entr_warehouse.zip
-RUN rm entr_warehouse.zip
-RUN rm -rf __MACOSX
-RUN chown -R jovyan /home/jovyan/entr_warehouse
-
-# COPY run_data_pipeline.sh /home/jovyan/
-#RUN echo "conda activate $(head -1 ${environment} | cut -d' ' -f2)" >> ~/.bashrc
-
-###############################################
-## SECTION: Configure Thrift server
-USER root
-# needed so that thrift server can create the megastore_db directory
+# grant permissions so that thrift server can create the metastore_db directory
 RUN chmod g+w /usr/local/spark
+
+# copy startup wrapper and grant exec permissions
+COPY startup_wrapper_script.sh /usr/local/bin
+COPY start_entr_services.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/startup_wrapper_script.sh &&\
+    chmod +x /usr/local/bin/start_entr_services.sh
+
+## -------------------------------------------------------------------------------
+## SECTION: Install and configure entr-warehouse
+USER jovyan
+WORKDIR /home/jovyan/src/entr_warehouse
+ENV DBT_PROJECT_PATH=/home/jovyan/src/entr_warehouse
+RUN git clone --depth 1 --branch ${entr_warehouse_branch} https://github.com/entralliance/entr_warehouse.git . && \
+    rm -rf .git &&\
+    bash /usr/local/bin/start_entr_services.sh &&\
+    sleep 60 &&\
+    dbt debug &&\
+    dbt deps &&\
+    dbt seed &&\
+    dbt run
+
+# -------------------------------------------------------------------------------
+# SECTION: Entry Point
+USER jovyan
+WORKDIR /home/jovyan
+CMD /usr/local/bin/startup_wrapper_script.sh
+

@@ -151,3 +151,5 @@ static
 .idea
 
 *.DS_Store
+
+start-entr.sh

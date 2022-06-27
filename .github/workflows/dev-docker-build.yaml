@@ -10,7 +10,7 @@ name: Build and publish dev Docker image to Github container registry
 
 on:
   push:
-    branches: ['develop']
+    branches: ['dev']
 
 jobs:
   build-and-push-image:

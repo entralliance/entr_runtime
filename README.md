@@ -8,23 +8,52 @@ of Python compatible with OpenOA, a Jupyter notebook server and dbt. This runtim
 be used for development and learning in place of the stack components used in
 production by renewable generator operators.
 
-## Getting Started
+## Quickstart
 
-<!-- some steps copied over from https://github.com/airbytehq/airbyte/blob/master/docs/deploying-airbyte/local-deployment.md -->
-1. Install Docker on your workstation \(see [instructions](https://www.docker.com/products/docker-desktop)\). Make sure you're on the latest version of `docker-compose`.
+1. Install Docker Desktop on your workstation \(see [instructions](https://www.docker.com/products/docker-desktop)\).
     - We recommend following [this guide](https://docs.docker.com/docker-for-windows/install/) to install Docker on Windows. After installing the WSL 2 backend and Docker you should be able to run containers using Windows PowerShell.
-2. In a bash shell (using WSL if on Windows), clone `entr_runtime` to a working directory on your machine (`git clone git@github.com:entralliance/entr_runtime.git`)
-3. Enter the newly created directory (`cd entr_runtime`) and run `docker compose up`, which will build the Docker image if it doesn't already exist and run it.
-4. Click on the link to Jupyter server printed to stdout when the container starts running (127.0.0.1:8888/lab?token=<randomly_generated_token>)
-5. Open a terminal from Jupyter (File > New > Terminal) and navigate to the location where your dbt project is installed (see section "Assumed Repository Structure" section below) using `cd ~/host/entr_warehouse` and run `dbt debug` to test your connection to the Spark warehouse.
-6. Once the connection to the warehouse is confirmed, install the dbt packages for your project using `dbt deps`
-7. Seed the example data contained in the entr_warehouse repo using `dbt seed` to instantiate them in the Spark warehouse
-6. Run `dbt run` to build all models in the Spark warehouse, which can now be consumed by any application connected to the Spark warehouse such as OpenOA
+2. Pull our image:
 
-### Assumed Repository Structure
-When the entr_runtime Docker image is built locally, it will try to mount [OpenOA](https://github.com/entralliance/OpenOA) and [entr_warehouse](https://github.com/entralliance/entr_warehouse) directories that exist at the same directory level where entr_runtime is installed. These two repositories are meant to be the locations where analytical development work and dbt data modeling development work persist locally, and those directories will be created if they don't already exist. Users can change the parameters in the `.env` file to map the mounts to different locations if OpenOA or entr_runtime exist in a different location on the local filesystem.
+```docker pull ghcr.io/entralliance/entr_runtime:dev```
 
-### Building runtime container
+3. Run the entr runtime container, forwarding the necessary ports:
+
+```docker run -p 8888:8888 ghcr.io/entralliance/entr_runtime:dev```
+
+4. Click on the Jupyter link printed to the terminal.
+
+## Developing ENTR Runtime Components
+
+The ENTR runtime contains the following preinstalled components: OpenOA, entr_warehouse. To develop these components, you check out development versions of these packages to your local filesystem, and then start the entr image with these paths mounted as volumes. If `$ENTR_HOME` is the directory you'd like to work from:
+
+1. `cd $ENTR_HOME`
+2. `git pull https://github.com/entralliance/entr_warehouse.git`
+3. `git pull https://github.com/entralliance/OpenOA.git`
+4. `git pull https://github.com/entralliance/entr_runtime.git`
+5. Optionally, build the entr image. You can also use the dev image from the container registry as discussed in Quickstart.
+6. Now, start the entr container in dev mode:
+`docker run -p 8888:8888 -p 8080:8080 -p 4040:4040 -v $ENTR_HOME/OpenOA:/home/jovyan/src/OpenOA -v $ENTR_HOME/entr_warehouse:/home/jovyan/src/entr_warehouse`
+7. Once inside the container, you will then need to re-install OpenOA in editable mode, or run `dbt run` as needed to update the container with the new code.
+    - To install OpenOA in editable mode:
+        - `cd /home/jovyan/src/OpenOA`
+        - `pip install -e .`
+    - To re-run DBT: 
+        - `cd /home/jovyan/src/entr_warehouse`
+        - `dbt run`
+
+### To Update the Warehouse
+
+Changes to the warehouse may require re-running dbt. To do this:
+
+1. Open a terminal from Jupyter (File > New > Terminal) and navigate to the location where your dbt project is installed (see section "Assumed Repository Structure" section below) using `cd ~/host/entr_warehouse` and run `dbt debug` to test your connection to the Spark warehouse.
+2. Once the connection to the warehouse is confirmed, install the dbt packages for your project using `dbt deps`
+3. Seed the example data contained in the entr_warehouse repo using `dbt seed` to instantiate them in the Spark warehouse
+4. Run `dbt run` to build all models in the Spark warehouse, which can now be consumed by any application connected to the Spark warehouse such as OpenOA
+
+## Building the entr_runtime image
+
+In most cases, we reccomend using the pre-built entr_runtime image avaialble from the github container registry (see quickstart). If you need to rebuild the image yourself, navigate to the entr_runtime directory and run:
+
 ```
 docker build -t entr/entr-runtime docker
 ```

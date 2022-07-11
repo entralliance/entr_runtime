@@ -58,6 +58,7 @@ RUN git clone --depth 1 --branch ${entr_warehouse_branch} https://github.com/ent
     dbt debug &&\
     dbt deps &&\
     dbt seed &&\
+    dbt run-operation stage_external_sources &&\
     dbt run
 
 # -------------------------------------------------------------------------------

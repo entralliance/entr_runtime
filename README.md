@@ -32,8 +32,8 @@ The ENTR runtime contains the following preinstalled components: OpenOA, entr_wa
 4. `git pull https://github.com/entralliance/entr_runtime.git`
 5. Optionally, build the entr image. You can also use the dev image from the container registry as discussed in Quickstart.
 6. Now, start the entr container in dev mode:
-`docker run -p 8888:8888 -p 8080:8080 -p 4040:4040 -v $ENTR_HOME/OpenOA:/home/jovyan/src/OpenOA -v $ENTR_HOME/entr_warehouse:/home/jovyan/src/entr_warehouse`
-7. Once inside the container, you will then need to re-install OpenOA in editable mode, or run `dbt run` as needed to update the container with the new code.
+`docker run -p 8888:8888 -v $ENTR_HOME/OpenOA:/home/jovyan/src/OpenOA -v $ENTR_HOME/entr_warehouse:/home/jovyan/src/entr_warehouse`
+7. Once inside the container, you will then need to re-install OpenOA in editable mode, or run `dbt run` as needed to materialize any changes to the dbt model code in the warehouse.
     - To install OpenOA in editable mode:
         - `cd /home/jovyan/src/OpenOA`
         - `pip install -e .`
@@ -45,10 +45,11 @@ The ENTR runtime contains the following preinstalled components: OpenOA, entr_wa
 
 Changes to the warehouse may require re-running dbt. To do this:
 
-1. Open a terminal from Jupyter (File > New > Terminal) and navigate to the location where your dbt project is installed (see section "Assumed Repository Structure" section below) using `cd ~/host/entr_warehouse` and run `dbt debug` to test your connection to the Spark warehouse.
+1. Open a terminal from Jupyter (File > New > Terminal) and navigate to the location where your dbt project is installed (see section "Assumed Repository Structure" section below) using `cd ~/src/entr_warehouse` and run `dbt debug` to test your connection to the Spark warehouse.
 2. Once the connection to the warehouse is confirmed, install the dbt packages for your project using `dbt deps`
-3. Seed the example data contained in the entr_warehouse repo using `dbt seed` to instantiate them in the Spark warehouse
-4. Run `dbt run` to build all models in the Spark warehouse, which can now be consumed by any application connected to the Spark warehouse such as OpenOA
+3. Seed the metadata tables contained in the entr_warehouse repo using `dbt seed` to instantiate them in the Spark warehouse
+4. (Re-)register example or newly added source data files with `dbt run-operation stage_external_sources`
+5. Run `dbt run` to build all models in the Spark warehouse, which can now be consumed by any application connected to the Spark warehouse such as OpenOA
 
 ## Building the entr_runtime image
 

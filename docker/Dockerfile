@@ -1,11 +1,19 @@
 # Start from a core stack version
 FROM jupyter/all-spark-notebook:python-3.9.12
 
-# set branch of entr_warehouse to clone & build
-ARG entr_warehouse_branch=dev
+## -------------------------------------------------------------------------------
+## SECTION: ENTR internal dependency specification
 
-# -------------------------------------------------------------------------------
-# SECTION: initial setup & package updates
+# Warehouse
+ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
+ARG ENTR_WAREHOUSE_GIT_BRANCH=v0.0.1
+
+# OpenOA
+ARG OPENOA_GIT_URL=https://github.com/entralliance/OpenOA.git
+ARG OPENOA_GIT_BRANCH=v2.3-entr0.0.1
+
+## -------------------------------------------------------------------------------
+## SECTION: initial setup & package updates
 USER root
 RUN apt-get update && \
     apt-get -y upgrade && \
@@ -29,7 +37,7 @@ RUN pwd
 
 # Install and configure OpenOA
 WORKDIR /home/jovyan/src/OpenOA
-RUN git clone --depth 1 https://github.com/entralliance/OpenOA.git . && \
+RUN git clone --depth 1 --branch ${OPENOA_GIT_BRANCH} ${OPENOA_GIT_URL} . && \
     rm -rf .git &&\
     pip install -e .
 
@@ -51,7 +59,7 @@ RUN chmod +x /usr/local/bin/startup_wrapper_script.sh &&\
 USER jovyan
 WORKDIR /home/jovyan/src/entr_warehouse
 ENV DBT_PROJECT_PATH=/home/jovyan/src/entr_warehouse
-RUN git clone --depth 1 --branch ${entr_warehouse_branch} https://github.com/entralliance/entr_warehouse.git . && \
+RUN git clone --depth 1 --branch ${ENTR_WAREHOUSE_GIT_BRANCH} ${ENTR_WAREHOUSE_GIT_URL} . && \
     rm -rf .git &&\
     bash /usr/local/bin/start_entr_services.sh &&\
     sleep 60 &&\

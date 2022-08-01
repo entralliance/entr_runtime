@@ -6,11 +6,13 @@
 # Script from https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
 #
 
-name: Build and publish dev Docker image to Github container registry
+name: Build and publish dev, main, and version tagged Docker image to Github container registry
 
 on:
   push:
     branches: ['dev']
+    tags:
+      - 'v*'
 
 env:
   # Use docker.io for Docker Hub if empty

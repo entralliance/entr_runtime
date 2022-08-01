@@ -53,7 +53,7 @@ Changes to the warehouse may require re-running dbt. To do this:
 
 ## Building the entr_runtime image
 
-In most cases, we reccomend using the pre-built entr_runtime image avaialble from the github container registry (see quickstart). If you need to rebuild the image yourself, navigate to the entr_runtime directory and run:
+In most cases, we recommend using the pre-built entr_runtime image avaialble from the github container registry (see quickstart). If you need to rebuild the image yourself, navigate to the entr_runtime directory and run:
 
 ```
 docker build -t entr/entr-runtime docker

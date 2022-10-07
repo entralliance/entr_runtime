@@ -14,11 +14,11 @@ production by renewable generator operators.
     - We recommend following [this guide](https://docs.docker.com/docker-for-windows/install/) to install Docker on Windows. After installing the WSL 2 backend and Docker you should be able to run containers using Windows PowerShell.
 2. Pull our image:
 
-```docker pull ghcr.io/entralliance/entr_runtime:dev```
+```docker pull ghcr.io/entralliance/entr_runtime:latest```
 
 3. Run the entr runtime container, forwarding the necessary ports:
 
-```docker run -p 8888:8888 ghcr.io/entralliance/entr_runtime:dev```
+```docker run -p 8888:8888 ghcr.io/entralliance/entr_runtime:latest```
 
 4. Click on the Jupyter link printed to the terminal.
 

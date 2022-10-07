@@ -22,6 +22,26 @@ production by renewable generator operators.
 
 4. Click on the Jupyter link printed to the terminal.
 
+From here, you can try many different things:
+
+### Running an example notebook in OpenOA
+1. Use the file navigator on the left side of the browser window to navigate to `src/OpenOA/examples/entr`
+
+2. Open 00_toolkit_examples.ipynb and run the cells.
+
+
+### Using Beeline and Hive2
+If you want to interact with the warehouse using beeline, click on the "Terminal" button in Jupyter Hub, then type:
+```
+start_hive2.sh
+```
+Then, you can open a beeline prompt. Note, there is no username and password
+```
+beeline -u jdbc:hive2://localhost:10000
+> use entr_warehouse;
+> show tables;
+```
+
 ## Developing ENTR Runtime Components
 
 The ENTR runtime contains the following preinstalled components: OpenOA, entr_warehouse. To develop these components, you check out development versions of these packages to your local filesystem, and then start the entr image with these paths mounted as volumes. If `$ENTR_HOME` is the directory you'd like to work from:
@@ -74,10 +94,6 @@ Dev mode, overload OpenOA and entr_warehouse with development versions
 docker run -p 8888:8888 -p 8080:8080 -p 4040:4040 -v <path-to-local-clone-of-OpenOA>:/home/jovyan/src/OpenOA -v <path-to-local-clone-of-entr_warehouse>:/home/jovyan/src/entr_warehouse entr/entr-runtime-dev
 ```
 Note, you will then need to re-install OpenOA in editable mode, or run `dbt run` as needed to update the container with the new code.
-
-```
-!connect jdbc:hive2://localhost:10000
-```
 
 ## Roadmap
 

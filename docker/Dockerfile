@@ -49,10 +49,8 @@ USER root
 RUN chmod g+w /usr/local/spark
 
 # copy startup wrapper and grant exec permissions
-COPY startup_wrapper_script.sh /usr/local/bin
-COPY start_entr_services.sh /usr/local/bin
-RUN chmod +x /usr/local/bin/startup_wrapper_script.sh &&\
-    chmod +x /usr/local/bin/start_entr_services.sh
+COPY start_hive2.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/start_hive2.sh
 
 ## -------------------------------------------------------------------------------
 ## SECTION: Install and configure entr-warehouse
@@ -60,8 +58,8 @@ USER jovyan
 WORKDIR /home/jovyan/src/entr_warehouse
 ENV DBT_PROJECT_PATH=/home/jovyan/src/entr_warehouse
 RUN git clone --depth 1 --branch ${ENTR_WAREHOUSE_GIT_BRANCH} ${ENTR_WAREHOUSE_GIT_URL} . && \
-    rm -rf .git &&\
-    bash /usr/local/bin/start_entr_services.sh &&\
+    rm -rf .git
+RUN bash /usr/local/bin/start_hive2.sh &&\
     sleep 60 &&\
     dbt debug &&\
     dbt deps &&\
@@ -73,5 +71,4 @@ RUN git clone --depth 1 --branch ${ENTR_WAREHOUSE_GIT_BRANCH} ${ENTR_WAREHOUSE_G
 # SECTION: Entry Point
 USER jovyan
 WORKDIR /home/jovyan
-CMD /usr/local/bin/startup_wrapper_script.sh
-
+CMD /usr/local/bin/start-notebook.sh

@@ -14,13 +14,33 @@ production by renewable generator operators.
     - We recommend following [this guide](https://docs.docker.com/docker-for-windows/install/) to install Docker on Windows. After installing the WSL 2 backend and Docker you should be able to run containers using Windows PowerShell.
 2. Pull our image:
 
-```docker pull ghcr.io/entralliance/entr_runtime:dev```
+```docker pull ghcr.io/entralliance/entr_runtime:latest```
 
 3. Run the entr runtime container, forwarding the necessary ports:
 
-```docker run -p 8888:8888 ghcr.io/entralliance/entr_runtime:dev```
+```docker run -p 8888:8888 ghcr.io/entralliance/entr_runtime:latest```
 
 4. Click on the Jupyter link printed to the terminal.
+
+From here, you can try many different things:
+
+### Running an example notebook in OpenOA
+1. Use the file navigator on the left side of the browser window to navigate to `src/OpenOA/examples/entr`
+
+2. Open 00_toolkit_examples.ipynb and run the cells.
+
+
+### Using Beeline and Hive2
+If you want to interact with the warehouse using beeline, click on the "Terminal" button in Jupyter Hub, then type:
+```
+start_hive2.sh
+```
+Then, you can open a beeline prompt. Note, there is no username and password
+```
+beeline -u jdbc:hive2://localhost:10000
+> use entr_warehouse;
+> show tables;
+```
 
 ## Developing ENTR Runtime Components
 
@@ -74,10 +94,6 @@ Dev mode, overload OpenOA and entr_warehouse with development versions
 docker run -p 8888:8888 -p 8080:8080 -p 4040:4040 -v <path-to-local-clone-of-OpenOA>:/home/jovyan/src/OpenOA -v <path-to-local-clone-of-entr_warehouse>:/home/jovyan/src/entr_warehouse entr/entr-runtime-dev
 ```
 Note, you will then need to re-install OpenOA in editable mode, or run `dbt run` as needed to update the container with the new code.
-
-```
-!connect jdbc:hive2://localhost:10000
-```
 
 ## Roadmap
 

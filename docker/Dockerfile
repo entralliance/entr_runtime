@@ -24,7 +24,7 @@ RUN apt-get update && \
 ## SECTION: Install and configure Python packages (including DBT)
 USER jovyan
 RUN conda install -c conda-forge sasl &&\
-    pip install pandas matplotlib xgboost numpy sklearn xgboost sklearn scipy dbt-spark[PyHive]==1.0 sasl &&\
+    pip install pandas matplotlib xgboost numpy sklearn xgboost sklearn scipy dbt-spark[PyHive]==1.3 sasl &&\
     mkdir /home/jovyan/.dbt -p &&\
     mkdir /home/jovyan/src/OpenOA -p &&\
     mkdir /home/jovyan/src/entr_warehouse -p &&\

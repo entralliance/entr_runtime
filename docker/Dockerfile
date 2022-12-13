@@ -10,7 +10,7 @@ ARG ENTR_WAREHOUSE_GIT_BRANCH=v0.0.1
 
 # OpenOA
 ARG OPENOA_GIT_URL=https://github.com/entralliance/OpenOA.git
-ARG OPENOA_GIT_BRANCH=v2.3-entr0.0.1
+ARG OPENOA_GIT_BRANCH=v3.0rc1-entr0.0.2
 
 ## -------------------------------------------------------------------------------
 ## SECTION: initial setup & package updates

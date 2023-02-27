@@ -65,19 +65,29 @@ The ENTR runtime contains the following preinstalled components: OpenOA, entr_wa
 
 Changes to the warehouse may require re-running dbt. To do this:
 
-1. Open a terminal from Jupyter (File > New > Terminal) and navigate to the location where your dbt project is installed (see section "Assumed Repository Structure" section below) using `cd ~/src/entr_warehouse` and run `dbt debug` to test your connection to the Spark warehouse.
-2. Once the connection to the warehouse is confirmed, install the dbt packages for your project using `dbt deps`
-3. Seed the metadata tables contained in the entr_warehouse repo using `dbt seed` to instantiate them in the Spark warehouse
-4. (Re-)register example or newly added source data files with `dbt run-operation stage_external_sources`
-5. Run `dbt run` to build all models in the Spark warehouse, which can now be consumed by any application connected to the Spark warehouse such as OpenOA
+1. Start hive server. From a terminal in Jupyter, start the process:
+```
+/usr/local/spark/bin/spark-submit\
+    --conf spark.hive.server2.thrift.bind.host=localhost\
+    --conf spark.sql.warehouse.dir=/home/jovyan/warehouse\
+    --conf spark.hadoop.javax.jdo.option.ConnectionURL=jdbc:derby:\;databaseName=/home/jovyan/warehouse/metastore_db\;create=true\
+    --class org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
+```
+2. Open a new terminal from Jupyter (File > New > Terminal) and navigate to the location where your dbt project is installed (see section "Assumed Repository Structure" section below) using `cd ~/src/entr_warehouse` and run `dbt debug` to test your connection to the Spark warehouse.
+3. Once the connection to the warehouse is confirmed, install the dbt packages for your project using `dbt deps`
+4. Seed the metadata tables contained in the entr_warehouse repo using `dbt seed` to instantiate them in the Spark warehouse
+5. (Re-)register example or newly added source data files with `dbt run-operation stage_external_sources`
+6. Run `dbt run` to build all models in the Spark warehouse, which can now be consumed by any application connected to the Spark warehouse such as OpenOA
 
 ## Building the entr_runtime image
 
 In most cases, we recommend using the pre-built entr_runtime image avaialble from the github container registry (see quickstart). If you need to rebuild the image yourself, navigate to the entr_runtime directory and run:
 
 ```
-docker build -t entralliance/entr-runtime:dev docker
+docker build -t myname/entr-runtime:dev docker
 ```
+
+In this case, we are specifying that the name of the image will be `myname/entr-runtime`, and the version tag will be be `dev`. You will probably want to modify the name and the tag to suit your own workflow.
 
 ### Running the entr runtime container
 

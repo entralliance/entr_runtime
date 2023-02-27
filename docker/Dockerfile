@@ -6,11 +6,11 @@ FROM jupyter/all-spark-notebook:python-3.9.12
 
 # Warehouse
 ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
-ARG ENTR_WAREHOUSE_GIT_BRANCH=v0.0.1
+ARG ENTR_WAREHOUSE_GIT_BRANCH=feature/sep22-jan23_public_warehouse_changes
 
 # OpenOA
 ARG OPENOA_GIT_URL=https://github.com/entralliance/OpenOA.git
-ARG OPENOA_GIT_BRANCH=v3.0rc1-entr0.0.2
+ARG OPENOA_GIT_BRANCH=feature/multiproject_aep
 
 ## -------------------------------------------------------------------------------
 ## SECTION: initial setup & package updates
@@ -24,7 +24,7 @@ RUN apt-get update && \
 ## SECTION: Install and configure Python packages (including DBT)
 USER jovyan
 RUN conda install -c conda-forge sasl &&\
-    pip install pandas matplotlib xgboost numpy sklearn xgboost sklearn scipy dbt-spark[PyHive]==1.3 sasl &&\
+    pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy dbt-spark[PyHive]==1.3 sasl &&\
     mkdir /home/jovyan/.dbt -p &&\
     mkdir /home/jovyan/src/OpenOA -p &&\
     mkdir /home/jovyan/src/entr_warehouse -p &&\

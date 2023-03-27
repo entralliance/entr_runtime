@@ -65,14 +65,7 @@ The ENTR runtime contains the following preinstalled components: OpenOA, entr_wa
 
 Changes to the warehouse may require re-running dbt. To do this:
 
-1. Start hive server. From a terminal in Jupyter, start the process:
-```
-/usr/local/spark/bin/spark-submit\
-    --conf spark.hive.server2.thrift.bind.host=localhost\
-    --conf spark.sql.warehouse.dir=/home/jovyan/warehouse\
-    --conf spark.hadoop.javax.jdo.option.ConnectionURL=jdbc:derby:\;databaseName=/home/jovyan/warehouse/metastore_db\;create=true\
-    --class org.apache.spark.sql.hive.thriftserver.HiveThriftServer2
-```
+1. Start hive server. From a terminal, start the process: `start_hive2.sh`
 2. Open a new terminal from Jupyter (File > New > Terminal) and navigate to the location where your dbt project is installed (see section "Assumed Repository Structure" section below) using `cd ~/src/entr_warehouse` and run `dbt debug` to test your connection to the Spark warehouse.
 3. Once the connection to the warehouse is confirmed, install the dbt packages for your project using `dbt deps`
 4. Seed the metadata tables contained in the entr_warehouse repo using `dbt seed` to instantiate them in the Spark warehouse

@@ -10,25 +10,25 @@ ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
 ARG ENTR_WAREHOUSE_GIT_BRANCH=dev
 
 # OpenOA
-ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@7aee792ab8408d2bbb014baea57542fa817e3cb4
+ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@7aee792ab8408d2bbb014baea57542fa817e3cb4#openoa
 
 # PyEntr
-ARG PYENTR_PIP_REF=git+https://github.com/entralliance/py-entr.git@main
+ARG PYENTR_PIP_REF=git+https://github.com/entralliance/py-entr.git@main#entr
 
 ## -------------------------------------------------------------------------------
 ## SECTION: initial setup & package updates
 USER root
-RUN apt-get update && \
-    apt-get -y upgrade && \
-    apt-get install -y libsasl2-modules-gssapi-heimdal libsasl2-dev
+RUN apt-get update && apt-get -y upgrade
+RUN conda run -n base apt-get install -y libsasl2-modules-gssapi-heimdal libsasl2-dev
 
 ## -------------------------------------------------------------------------------
 ## SECTION: Install and configure Python packages (including DBT)
-USER jovyan
-RUN conda install -c conda-forge sasl
-RUN conda run -n base python -m pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy dbt-spark[PyHive]==1.3
-RUN conda run -n base python -m pip install --no-deps ${OPENOA_PIP_REF}
-RUN conda run -n base python -m pip install --no-deps ${PYENTR_PIP_REF}
+USER root
+RUN pip install dbt-spark[PyHive]==1.3
+#RUN conda run -n base python -m pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy
+RUN pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy
+RUN PYTHONPATH=/usr/local/spark/python pip install ${OPENOA_PIP_REF}
+RUN PYTHONPATH=/usr/local/spark/python pip install ${PYENTR_PIP_REF}
 
 ## -------------------------------------------------------------------------------
 ## SECTION: copy local files and grant permissions

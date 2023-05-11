@@ -1,5 +1,5 @@
 # Start from a core stack version
-FROM jupyter/all-spark-notebook:python-3.9.12
+FROM jupyter/all-spark-notebook:python-3.10.10
 
 ## -------------------------------------------------------------------------------
 ## SECTION: ENTR internal dependency specification
@@ -9,8 +9,10 @@ ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
 ARG ENTR_WAREHOUSE_GIT_BRANCH=v0.0.1
 
 # OpenOA
-ARG OPENOA_GIT_URL=https://github.com/entralliance/OpenOA.git
-ARG OPENOA_GIT_BRANCH=v3.0rc1-entr0.0.2
+ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@7aee792ab8408d2bbb014baea57542fa817e3cb4
+
+# PyEntr
+ARG PYENTR_PIP_REF=git+https://github.com/entralliance/py-entr.git@main
 
 ## -------------------------------------------------------------------------------
 ## SECTION: initial setup & package updates
@@ -30,16 +32,12 @@ RUN conda install -c conda-forge sasl &&\
     mkdir /home/jovyan/src/entr_warehouse -p &&\
     mkdir /home/jovyan/warehouse -p
 
+RUN pip install {OPENOA_PIP_REF}
+RUN pip install {PYENTR_PIP_REF}
+
 # copy profiles where dbt can find it
 COPY build_profiles.yml /home/jovyan/.dbt/profiles.yml
 
-RUN pwd
-
-# Install and configure OpenOA
-WORKDIR /home/jovyan/src/OpenOA
-RUN git clone --depth 1 --branch ${OPENOA_GIT_BRANCH} ${OPENOA_GIT_URL} . && \
-    rm -rf .git &&\
-    pip install -e .
 
 ## -------------------------------------------------------------------------------
 ## SECTION: copy local files and grant permissions

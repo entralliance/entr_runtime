@@ -1,8 +1,9 @@
-# Start from a core stack version
-FROM jupyter/all-spark-notebook:python-3.10.10
+## -------------------------------------------------------------------------------
+## SECTION: Base Image
+FROM jupyter/all-spark-notebook:python-3.9.12
 
 ## -------------------------------------------------------------------------------
-## SECTION: ENTR internal dependency specification
+## SECTION: Arguments and Dependency Specification
 
 # Warehouse
 ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
@@ -18,25 +19,22 @@ ARG PYENTR_PIP_REF=git+https://github.com/entralliance/py-entr.git@main
 ## SECTION: initial setup & package updates
 USER root
 RUN apt-get update && \
-#    apt-get -y upgrade && \
-
+    apt-get -y upgrade && \
     apt-get install -y libsasl2-modules-gssapi-heimdal libsasl2-dev
 
 ## -------------------------------------------------------------------------------
 ## SECTION: Install and configure Python packages (including DBT)
 USER jovyan
-RUN pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy dbt-spark[PyHive]==1.3
+RUN conda install -c conda-forge sasl
+RUN conda run -n base python -m pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy dbt-spark[PyHive]==1.3
+RUN conda run -n base python -m pip install --no-deps ${OPENOA_PIP_REF}
+RUN conda run -n base python -m pip install --no-deps ${PYENTR_PIP_REF}
 
 ## -------------------------------------------------------------------------------
 ## SECTION: copy local files and grant permissions
 USER jovyan
 RUN mkdir /home/jovyan/.dbt -p &&\
-    mkdir /home/jovyan/src/OpenOA -p &&\
-    mkdir /home/jovyan/src/entr_warehouse -p &&\
     mkdir /home/jovyan/warehouse -p
-
-RUN pip install {OPENOA_PIP_REF}
-RUN pip install {PYENTR_PIP_REF}
 
 # copy profiles where dbt can find it
 COPY build_profiles.yml /home/jovyan/.dbt/profiles.yml
@@ -66,15 +64,6 @@ RUN bash /usr/local/bin/start_hive2.sh &&\
     dbt seed &&\
     dbt run-operation stage_external_sources &&\
     dbt run
-
-## -------------------------------------------------------------------------------
-## SECTION: Install and configure OpenOA
-# Install and configure OpenOA
-USER jovyan
-WORKDIR /home/jovyan/src/OpenOA 
-RUN git clone --depth 1 --branch ${OPENOA_GIT_BRANCH} ${OPENOA_GIT_URL} . && \
-    rm -rf .git &&\
-    pip install -e .
 
 # -------------------------------------------------------------------------------
 # SECTION: Entry Point

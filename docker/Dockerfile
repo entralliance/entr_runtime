@@ -16,8 +16,6 @@ ARG OPENOA_GIT_BRANCH=dev
 ## SECTION: initial setup & package updates
 USER root
 RUN apt-get update && \
-#    apt-get -y upgrade && \
-
     apt-get install -y libsasl2-modules-gssapi-heimdal libsasl2-dev
 
 ## -------------------------------------------------------------------------------

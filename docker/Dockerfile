@@ -7,7 +7,7 @@ FROM jupyter/all-spark-notebook:python-3.9.12
 
 # Warehouse
 ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
-ARG ENTR_WAREHOUSE_GIT_BRANCH=feature/dbt-package-integration
+ARG ENTR_WAREHOUSE_GIT_BRANCH=dev
 
 # OpenOA
 ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@7aee792ab8408d2bbb014baea57542fa817e3cb4#openoa

@@ -52,7 +52,7 @@ The ENTR runtime contains the following preinstalled components: OpenOA, entr_wa
 4. `git pull https://github.com/entralliance/entr_runtime.git`
 5. Optionally, build the entr image. You can also use the dev image from the container registry as discussed in Quickstart.
 6. Now, start the entr container in dev mode:
-`docker run -p 8888:8888 -v $ENTR_HOME/OpenOA:/home/jovyan/src/OpenOA -v $ENTR_HOME/entr_warehouse:/home/jovyan/src/entr_warehouse`
+`docker run -p 8888:8888 -v $ENTR_HOME/OpenOA:/home/jovyan/src/OpenOA -v $ENTR_HOME/entr_warehouse:/home/jovyan/src/entr_warehouse jordanperr/entr_runtime`
 7. Once inside the container, you will then need to re-install OpenOA in editable mode, or run `dbt run` as needed to materialize any changes to the dbt model code in the warehouse.
     - To install OpenOA in editable mode:
         - `cd /home/jovyan/src/OpenOA`

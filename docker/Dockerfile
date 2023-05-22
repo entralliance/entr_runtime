@@ -7,7 +7,7 @@ FROM jupyter/all-spark-notebook:python-3.9.12
 
 # Warehouse
 ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
-ARG ENTR_WAREHOUSE_GIT_BRANCH=dev
+ARG ENTR_WAREHOUSE_GIT_BRANCH=feature/dbt-package-integration
 
 # OpenOA
 ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@7aee792ab8408d2bbb014baea57542fa817e3cb4#openoa
@@ -23,7 +23,7 @@ RUN conda run -n base apt-get install -y libsasl2-modules-gssapi-heimdal libsasl
 
 ## -------------------------------------------------------------------------------
 ## SECTION: Install and configure Python packages (including DBT)
-USER root
+USER jovyan
 RUN pip install dbt-spark[PyHive]==1.3
 #RUN conda run -n base python -m pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy
 RUN pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy

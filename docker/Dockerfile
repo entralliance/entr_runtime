@@ -70,5 +70,5 @@ RUN bash /usr/local/bin/start_hive2.sh &&\
 # SECTION: Entry Point
 USER jovyan
 WORKDIR /home/jovyan
-ADD ../workspace /home/jovyan
+ADD workspace /home/jovyan
 CMD /usr/local/bin/start-notebook.sh

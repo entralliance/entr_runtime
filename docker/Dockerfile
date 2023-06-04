@@ -9,8 +9,8 @@ FROM jupyter/all-spark-notebook:python-3.9.12
 ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
 ARG ENTR_WAREHOUSE_GIT_BRANCH=dev
 
-# OpenOA
-ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@7aee792ab8408d2bbb014baea57542fa817e3cb4#openoa
+# entralliance / OpenOA @ develop_v3 @ 3ec93213b8b8083854a73f18e3c6c5a03e40562a
+ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@3ec93213b8b8083854a73f18e3c6c5a03e40562a#openoa
 
 # PyEntr
 ARG PYENTR_PIP_REF=git+https://github.com/entralliance/py-entr.git@main#entr
@@ -24,11 +24,12 @@ RUN conda run -n base apt-get install -y libsasl2-modules-gssapi-heimdal libsasl
 ## -------------------------------------------------------------------------------
 ## SECTION: Install and configure Python packages (including DBT)
 USER jovyan
+ENV PYTHONPATH=/usr/local/spark/python
 RUN pip install dbt-spark[PyHive]==1.3
 #RUN conda run -n base python -m pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy
 RUN pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy
-RUN PYTHONPATH=/usr/local/spark/python pip install ${OPENOA_PIP_REF}
-RUN PYTHONPATH=/usr/local/spark/python pip install ${PYENTR_PIP_REF}
+RUN pip install ${OPENOA_PIP_REF}
+RUN pip install ${PYENTR_PIP_REF}
 
 ## -------------------------------------------------------------------------------
 ## SECTION: copy local files and grant permissions
@@ -69,4 +70,5 @@ RUN bash /usr/local/bin/start_hive2.sh &&\
 # SECTION: Entry Point
 USER jovyan
 WORKDIR /home/jovyan
+ADD ../workspace /home/jovyan
 CMD /usr/local/bin/start-notebook.sh

@@ -18,7 +18,8 @@ ARG PYENTR_PIP_REF=git+https://github.com/entralliance/py-entr.git@main#entr
 ## -------------------------------------------------------------------------------
 ## SECTION: initial setup & package updates
 USER root
-RUN apt-get update && apt-get -y upgrade
+RUN apt-get update
+# && apt-get -y upgrade
 RUN conda run -n base apt-get install -y libsasl2-modules-gssapi-heimdal libsasl2-dev
 
 ## -------------------------------------------------------------------------------

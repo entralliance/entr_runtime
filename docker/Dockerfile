@@ -62,7 +62,9 @@ RUN bash /usr/local/bin/start_hive2.sh &&\
     dbt debug &&\
     dbt deps &&\
     dbt seed &&\
-    dbt run-operation stage_external_sources &&\
+    dbt run-operation stage_external_sources
+RUN bash /usr/local/bin/start_hive2.sh &&\
+    sleep 60 &&\
     dbt run
 
 # -------------------------------------------------------------------------------

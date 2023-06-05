@@ -7,7 +7,7 @@ FROM jupyter/all-spark-notebook:python-3.9.12
 
 # Warehouse
 ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
-ARG ENTR_WAREHOUSE_GIT_BRANCH=dev
+ARG ENTR_WAREHOUSE_GIT_BRANCH=0.0.3
 
 # entralliance / OpenOA @ develop_v3 @ 3ec93213b8b8083854a73f18e3c6c5a03e40562a
 ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@3ec93213b8b8083854a73f18e3c6c5a03e40562a#openoa
@@ -18,18 +18,17 @@ ARG PYENTR_PIP_REF=git+https://github.com/entralliance/py-entr.git@main#entr
 ## -------------------------------------------------------------------------------
 ## SECTION: initial setup & package updates
 USER root
-RUN apt-get update && apt-get -y upgrade
+RUN apt-get update
+# && apt-get -y upgrade
 RUN conda run -n base apt-get install -y libsasl2-modules-gssapi-heimdal libsasl2-dev
 
 ## -------------------------------------------------------------------------------
 ## SECTION: Install and configure Python packages (including DBT)
 USER jovyan
 ENV PYTHONPATH=/usr/local/spark/python
-RUN pip install dbt-spark[PyHive]==1.3
 #RUN conda run -n base python -m pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy
-RUN pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy
-RUN pip install ${OPENOA_PIP_REF}
-RUN pip install ${PYENTR_PIP_REF}
+RUN python -m pip install --upgrade pip
+RUN pip install dbt-spark[PyHive]==1.3 pandas matplotlib xgboost numpy xgboost scikit-learn scipy ${OPENOA_PIP_REF} ${PYENTR_PIP_REF}
 
 ## -------------------------------------------------------------------------------
 ## SECTION: copy local files and grant permissions
@@ -63,7 +62,9 @@ RUN bash /usr/local/bin/start_hive2.sh &&\
     dbt debug &&\
     dbt deps &&\
     dbt seed &&\
-    dbt run-operation stage_external_sources &&\
+    dbt run-operation stage_external_sources
+RUN bash /usr/local/bin/start_hive2.sh &&\
+    sleep 60 &&\
     dbt run
 
 # -------------------------------------------------------------------------------

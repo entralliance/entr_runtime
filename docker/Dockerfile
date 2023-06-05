@@ -26,12 +26,9 @@ RUN conda run -n base apt-get install -y libsasl2-modules-gssapi-heimdal libsasl
 ## SECTION: Install and configure Python packages (including DBT)
 USER jovyan
 ENV PYTHONPATH=/usr/local/spark/python
-RUN pip install dbt-spark[PyHive]==1.3
 #RUN conda run -n base python -m pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy
-RUN pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy
-RUN pip install ${OPENOA_PIP_REF}
-RUN pip install ${PYENTR_PIP_REF}
 RUN python -m pip install --upgrade pip
+RUN pip install dbt-spark[PyHive]==1.3 pandas matplotlib xgboost numpy xgboost scikit-learn scipy ${OPENOA_PIP_REF} ${PYENTR_PIP_REF}
 
 ## -------------------------------------------------------------------------------
 ## SECTION: copy local files and grant permissions

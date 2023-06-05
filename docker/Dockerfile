@@ -31,6 +31,7 @@ RUN pip install dbt-spark[PyHive]==1.3
 RUN pip install pandas matplotlib xgboost numpy xgboost scikit-learn scipy
 RUN pip install ${OPENOA_PIP_REF}
 RUN pip install ${PYENTR_PIP_REF}
+RUN python -m pip install --upgrade pip
 
 ## -------------------------------------------------------------------------------
 ## SECTION: copy local files and grant permissions

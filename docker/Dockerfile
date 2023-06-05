@@ -10,7 +10,7 @@ ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
 ARG ENTR_WAREHOUSE_GIT_BRANCH=0.0.3
 
 # entralliance / OpenOA @ develop_v3 @ 3ec93213b8b8083854a73f18e3c6c5a03e40562a
-ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@3ec93213b8b8083854a73f18e3c6c5a03e40562a#openoa
+ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@entr_runtime/dev#openoa
 
 # PyEntr
 ARG PYENTR_PIP_REF=git+https://github.com/entralliance/py-entr.git@main#entr

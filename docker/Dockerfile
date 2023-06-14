@@ -9,11 +9,11 @@ FROM jupyter/all-spark-notebook:python-3.9.12
 ARG ENTR_WAREHOUSE_GIT_URL=https://github.com/entralliance/entr_warehouse.git
 ARG ENTR_WAREHOUSE_GIT_BRANCH=0.0.3
 
-# entralliance / OpenOA @ develop_v3 @ 3ec93213b8b8083854a73f18e3c6c5a03e40562a
-ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@820b483feae596f10adb59e67710e47a868c1d48#openoa
+# OpenOA
+ARG OPENOA_PIP_REF=git+https://github.com/entralliance/OpenOA.git@v3.0rc2-entr0.0.2#openoa
 
 # PyEntr
-ARG PYENTR_PIP_REF=git+https://github.com/entralliance/py-entr.git@4491f4b2374f967b20efe9204546375c73b151cf#entr
+ARG PYENTR_PIP_REF=git+https://github.com/entralliance/py-entr.git@v0.0.1#entr
 
 ## -------------------------------------------------------------------------------
 ## SECTION: initial setup & package updates

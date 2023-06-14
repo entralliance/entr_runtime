@@ -97,7 +97,8 @@ git checkout dev
 docker build -t yourname/entr-runtime docker
 ```
 
-*Note: Use the option ``--no-cache`` to force rebuilding of each layer*
+> **Note**
+> Use the option ``--no-cache`` to force rebuilding of each layer*
 
 4. Run the image you just built:
 

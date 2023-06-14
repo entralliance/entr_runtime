@@ -1,5 +1,8 @@
 # ENTR
 
+> **Note**
+> For the latest documentation please see our docs website at [entralliance.github.io](https://entralliance.github.io/getting_started.html#installating-the-entr-runtime).
+
 ENTR is a distribution of existing tools, frameworks, and standards, 
 packaged together to accelerate the transition to clean energy.
 
@@ -25,9 +28,9 @@ production by renewable generator operators.
 From here, you can try many different things:
 
 ### Running an example notebook in OpenOA
-1. Use the file navigator on the left side of the browser window to navigate to `src/OpenOA/examples/entr`
+1. Use the file navigator on the left side of the browser window to navigate to `/examples`
 
-2. Open 00_toolkit_examples.ipynb and run the cells.
+2. Open any of the notebooks and run the cells.
 
 
 ### Using Beeline and Hive2
@@ -44,60 +47,57 @@ beeline -u jdbc:hive2://localhost:10000
 
 ## Developing ENTR Runtime Components
 
-The ENTR runtime contains the following preinstalled components: OpenOA, entr_warehouse. To develop these components, you check out development versions of these packages to your local filesystem, and then start the entr image with these paths mounted as volumes. If `$ENTR_HOME` is the directory you'd like to work from:
+The ENTR runtime contains the following preinstalled components: OpenOA, entr_warehouse, and py-entr. To develop these components, you check out development versions of these packages to your local filesystem, and then start the entr image with these paths mounted as volumes. You then install the packages from these volumes in editable mode. This allows you to edit the code in these components on your local machine, and see the changes immediately reflected in the runtime. If `$ENTR_HOME` is the directory you'd like to work from:
 
 1. `cd $ENTR_HOME`
-2. `git pull https://github.com/entralliance/entr_warehouse.git`
-3. `git pull https://github.com/entralliance/OpenOA.git`
-4. `git pull https://github.com/entralliance/entr_runtime.git`
-5. Optionally, build the entr image. You can also use the dev image from the container registry as discussed in Quickstart.
-6. Now, start the entr container in dev mode:
-`docker run -p 8888:8888 -v $ENTR_HOME/OpenOA:/home/jovyan/src/OpenOA -v $ENTR_HOME/entr_warehouse:/home/jovyan/src/entr_warehouse jordanperr/entr_runtime`
-7. Once inside the container, you will then need to re-install OpenOA in editable mode, or run `dbt run` as needed to materialize any changes to the dbt model code in the warehouse.
+2. `git clone https://github.com/entralliance/entr_warehouse.git`
+3. `git clone https://github.com/entralliance/OpenOA.git`
+4. `git clone https://github.com/entralliance/py_entr.git`
+4. `git clone https://github.com/entralliance/entr_runtime.git`
+5. Optionally, build the entr image. You can also use the dev image from the container registry as discussed in the quickstart guide.
+6. Now, start the entr container in dev mode, mapping the directories you checked out to paths within the container:
+`docker run -p 8888:8888 -v $ENTR_HOME/OpenOA:/home/jovyan/src/OpenOA -v $ENTR_HOME/entr_warehouse:/home/jovyan/src/entr_warehouse -v $ENTR_HOME/py-entr:/home/jovyan/src/py-entr`.
+7. Once inside the container, you will then need to re-install OpenOA and/or pyentr editable mode, or run `dbt run` as needed to materialize any changes to the dbt model code in the warehouse.
     - To install OpenOA in editable mode:
         - `cd /home/jovyan/src/OpenOA`
         - `pip install -e .`
-    - To re-run DBT: 
-        - `cd /home/jovyan/src/entr_warehouse`
-        - `dbt run`
+    - To install Py-Entr in editable mode:
+        - `cd /home/jovyan/src/py-entr`
+        - `pip install -e .`
 
 ### To Update the Warehouse
 
 Changes to the warehouse may require re-running dbt. To do this:
 
-1. Start hive server. From a terminal, start the process: `start_hive2.sh`
-2. Open a new terminal from Jupyter (File > New > Terminal) and navigate to the location where your dbt project is installed (see section "Assumed Repository Structure" section below) using `cd ~/src/entr_warehouse` and run `dbt debug` to test your connection to the Spark warehouse.
-3. Once the connection to the warehouse is confirmed, install the dbt packages for your project using `dbt deps`
-4. Seed the metadata tables contained in the entr_warehouse repo using `dbt seed` to instantiate them in the Spark warehouse
-5. (Re-)register example or newly added source data files with `dbt run-operation stage_external_sources`
-6. Run `dbt run` to build all models in the Spark warehouse, which can now be consumed by any application connected to the Spark warehouse such as OpenOA
+1. Open a terminal from Jupyter (File > New > Terminal) and navigate to the location where your dbt project is installed (see section "Assumed Repository Structure" section below) using `cd ~/src/entr_warehouse` and run `dbt debug` to test your connection to the Spark warehouse.
+2. Once the connection to the warehouse is confirmed, install the dbt packages for your project using `dbt deps`
+3. Seed the metadata tables contained in the entr_warehouse repo using `dbt seed` to instantiate them in the Spark warehouse
+4. (Re-)register example or newly added source data files with `dbt run-operation stage_external_sources`
+5. Run `dbt run` to build all models in the Spark warehouse, which can now be consumed by any application connected to the Spark warehouse such as OpenOA
 
 ## Building the entr_runtime image
 
-In most cases, we recommend using the pre-built entr_runtime image avaialble from the github container registry (see quickstart). If you need to rebuild the image yourself, navigate to the entr_runtime directory and run:
+In most cases, we reccomend using the pre-built entr_runtime image avaialble from the github container registry. If you need to rebuild the image yourself, follow the instructions below:
+
+1. Install Git and Docker Desktop on your workstation.
+
+2. Clone the ENTR Runtime repository:
 
 ```
-docker build -t myname/entr-runtime:dev docker
+git clone git@github.com:entralliance/entr_runtime.git
+git checkout dev
 ```
 
-In this case, we are specifying that the name of the image will be `myname/entr-runtime`, and the version tag will be be `dev`. You will probably want to modify the name and the tag to suit your own workflow.
-
-### Running the entr runtime container
-
-Basic mode, forwarding all ports to localhost:
+3. Navigate to the `entr_runtime` directory and run the following, replacing `yourname` with your username:
 
 ```
-docker run -p 8888:8888 -p 8080:8080 -p 4040:4040 entr/entr-runtime
-# use the option --no-cache to force rebuilding of each layer
+docker build -t yourname/entr-runtime docker
 ```
 
-Dev mode, overload OpenOA and entr_warehouse with development versions
+*Note: Use the option ``--no-cache`` to force rebuilding of each layer*
 
-```
-docker run -p 8888:8888 -p 8080:8080 -p 4040:4040 -v <path-to-local-clone-of-OpenOA>:/home/jovyan/src/OpenOA -v <path-to-local-clone-of-entr_warehouse>:/home/jovyan/src/entr_warehouse entr/entr-runtime-dev
-```
-Note, you will then need to re-install OpenOA in editable mode, or run `dbt run` as needed to update the container with the new code.
+4. Run the image you just built:
 
-## Roadmap
+```docker run -p 8888:8888 yourname/entr_runtime```
 
-Coming soon!
+

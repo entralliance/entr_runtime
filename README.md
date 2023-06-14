@@ -1,4 +1,4 @@
-# ENTR
+# ENTR Runtime Docker Container
 
 > **Note**
 > For the latest documentation please see our docs website at [entralliance.github.io](https://entralliance.github.io/getting_started.html#installating-the-entr-runtime).
@@ -7,9 +7,8 @@ ENTR is a distribution of existing tools, frameworks, and standards,
 packaged together to accelerate the transition to clean energy.
 
 The ENTR runtime provides a containerized environment with a Spark server, a version 
-of Python compatible with OpenOA, a Jupyter notebook server and dbt. This runtime can
-be used for development and learning in place of the stack components used in
-production by renewable generator operators.
+of Python compatible with OpenOA, a python package to facilitate using the entr warehouse, a Jupyter notebook server and dbt.
+This runtime can be used for development and learning in place of the stack components used in production by renewable generator operators.
 
 ## Quickstart
 
@@ -20,7 +19,8 @@ production by renewable generator operators.
 
 ```docker pull ghcr.io/entralliance/entr_runtime:latest```
 
-*Note: There are numerous security considerations when pulling and running images from the public internet. User should take the necessary steps to ensure operational security.*
+> **Warning**
+> There are numerous security considerations when pulling and running images from the public internet. This open-source image is meant for development and learning, and we make no guarantees around security patching nor the presence of vulnerabilities in this image. Users should take the necessary steps to ensure operational security.
 
 3. Run the entr runtime container, forwarding the necessary ports:
 
